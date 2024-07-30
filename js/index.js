@@ -1,45 +1,59 @@
-// Получаем элемент аккордеона
-const accordion = document.querySelector(".accordion");
+document.addEventListener("DOMContentLoaded", function () {
+  // Получаем элемент аккордеона
+  const accordion = document.querySelector(".accordion");
+  let currentPanelIndex = 0;
+  let intervalId;
 
-// Добавляем обработчик событий для клика по аккордеону
-accordion.addEventListener("click", (e) => {
-  // Находим ближайшую панель аккордеона от элемента, по которому был совершен клик
-  const activePanel = e.target.closest(".accordion-panel");
+  // Устанавливаем начальное состояние аккордеона
+  const panels = accordion.querySelectorAll(".accordion-panel");
+  setActivePanel(currentPanelIndex);
 
-  // Если панель не найдена, выходим из функции
-  if (!activePanel) return;
+  // Добавляем обработчик событий для клика по аккордеону
+  accordion.addEventListener("click", (e) => {
+    // Находим ближайшую панель аккордеона от элемента, по которому был совершен клик
+    const activePanel = e.target.closest(".accordion-panel");
 
-  // Включаем/выключаем аккордеон для выбранной панели
-  toggleAccordion(activePanel);
+    // Если панель не найдена, выходим из функции
+    if (!activePanel) return;
+
+    // Определяем индекс активной панели
+    currentPanelIndex = Array.from(panels).indexOf(activePanel);
+
+    // Включаем/выключаем аккордеон для выбранной панели
+    setActivePanel(currentPanelIndex);
+
+    // Перезапускаем таймер
+    restartTimer();
+  });
+
+  // Функция для установки активной панели
+  function setActivePanel(index) {
+    panels.forEach((panel, i) => {
+      const button = panel.querySelector("button");
+      const content = panel.querySelector(".accordion-content");
+
+      if (i === index) {
+        button.setAttribute("aria-expanded", true);
+        content.setAttribute("aria-hidden", false);
+      } else {
+        button.setAttribute("aria-expanded", false);
+        content.setAttribute("aria-hidden", true);
+      }
+    });
+  }
+
+  // Функция для переключения состояния аккордеона
+  function toggleAccordion() {
+    currentPanelIndex = (currentPanelIndex + 1) % panels.length;
+    setActivePanel(currentPanelIndex);
+  }
+
+  // Функция для перезапуска таймера
+  function restartTimer() {
+    clearInterval(intervalId);
+    intervalId = setInterval(toggleAccordion, 3000);
+  }
+
+  // Устанавливаем интервал для автоматического переключения панелей
+  intervalId = setInterval(toggleAccordion, 3000);
 });
-
-/**
- * Функция для переключения состояния аккордеона
- * @param {Element} panelToActive - панель аккордеона, которая должна быть активирована
- */
-function toggleAccordion(panelToActive) {
-  // Получаем все кнопки внутри родительского элемента аккордеона
-  const buttons = panelToActive.parentElement.querySelectorAll("button");
-
-  // Получаем все содержимое аккордеона внутри родительского элемента аккордеона
-  const contents =
-    panelToActive.parentElement.querySelectorAll(".accordion-content");
-
-  // Устанавливаем атрибут aria-expanded на false для всех кнопок
-  buttons.forEach((button) => {
-    button.setAttribute("aria-expanded", false);
-  });
-
-  // Устанавливаем атрибут aria-hidden на true для всех содержимых аккордеона
-  contents.forEach((content) => {
-    content.setAttribute("aria-hidden", true);
-  });
-
-  // Устанавливаем атрибут aria-expanded на true для кнопки активной панели
-  panelToActive.querySelector("button").setAttribute("aria-expanded", true);
-
-  // Устанавливаем атрибут aria-hidden на false для содержимого активной панели
-  panelToActive
-    .querySelector(".accordion-content")
-    .setAttribute("aria-hidden", false);
-}

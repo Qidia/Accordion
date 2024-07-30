@@ -21,6 +21,14 @@ img {
   max-width: 50rem;
   margin-inline: auto;
   padding-inline: 1rem;
+
+
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
 }
 
 .accordion {
@@ -34,9 +42,6 @@ img {
 
   contain: content;
   padding: 0.5rem;
-
-  /*   margin-top: 20rem;
- */
 }
 
 @media (min-width: 45em) {
@@ -53,7 +58,7 @@ img {
 .accordion-panel {
   position: relative;
   isolation: isolate;
-  
+
   /* Устанавливаем начальный размер панели и скрываем переполнение */
   flex-basis: calc((var(--_panel-padding) * 2) + var(--_button-size));
   overflow: hidden;
@@ -87,16 +92,18 @@ img {
 .accordion-panel:has([aria-expanded="true"]) {
   flex-basis: clamp(15rem, 40vh, 20rem);
   flex-grow: 1;
+  box-shadow: 0px 3px 5px 2px rgba(34, 60, 80, 0.2);
+  outline: 3px solid var(--_panel-color);
 }
 
 .accordion-trigger {
   outline: 0; /* Убираем обводку по умолчанию */
 }
 
-.accordion-panel:focus-within {
+/* .accordion-panel:focus-within {
   outline: 3px solid var(--_panel-color);
   outline-offset: 4px;
-}
+} */
 
 .accordion-content > p {
   transform: translateY(2rem);
@@ -111,11 +118,18 @@ img {
 
 .accordion-title {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   position: relative;
   display: grid;
   isolation: isolate;
   align-items: center;
+  color: rgb(255, 255, 255);
+
+  writing-mode: vertical-rl; /* Поворот текста на 90 градусов против часовой стрелки */
+  text-orientation: upright; /* Текст ориентирован вертикально */
+}
+.accordion-panel:has([aria-expanded="true"]) .accordion-title {
+  color: black;
 }
 
 @media (max-width: 44.999em) {
@@ -149,7 +163,7 @@ img {
   display: flex;
   align-items: center;
   gap: var(--_panel-gap);
-  flex-direction: row-reverse;
+  flex-direction: column;
   background: transparent;
   border: 0;
   padding: 0;
